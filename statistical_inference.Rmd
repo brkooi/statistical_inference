@@ -31,7 +31,7 @@ rate<-0.2
 theoretical_mean<-1/rate
 theoretical_sd<-1/rate
 theoretical_var<- 1 / (rate^2)
-exponentialdistribution<-rexp(observations*samplesize,rate)
+exponentialdistribution<-rexp(observations,rate)
 hist(exponentialdistribution)
 summary(exponentialdistribution)
 str(exponentialdistribution)
