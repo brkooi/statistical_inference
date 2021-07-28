@@ -1,0 +1,67 @@
+---
+title: "Data Science Statistical Inference"
+author: "Ben Kooi"
+date: "28-7-2021"
+output: html_document
+---
+
+## Setting the environment
+
+Load the needed packages.
+```{r}
+packages <- c("data.table","dplyr", "ggplot2", "knitr")
+sapply(packages, require, character.only=TRUE, quietly=TRUE)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Part 1 - Exponential Distribution Simulation
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r }
+set.seed(5)
+observations<-1000
+samplesize<-40
+rate<-0.2
+theoretical_mean<-1/rate
+theoretical_sd<-1/rate
+theoretical_var<- 1 / (rate^2)
+exponentialdistribution<-rexp(observations*samplesize,rate)
+hist(exponentialdistribution)
+summary(exponentialdistribution)
+str(exponentialdistribution)
+var(exponentialdistribution)
+sd(exponentialdistribution)
+samplemeans = NULL
+for (i in 1 : 1000) samplemeans = c(samplemeans, mean(sample(exponentialdistribution, samplesize, replace=TRUE)))
+
+summary(samplemeans)
+str(samplemeans)
+hist(samplemeans)
+var(samplemeans)
+sd(samplemeans)
+theoretical_mean
+theoretical_sd
+theoretical_var
+```
+The variance of X is given by
+X = 1 / lambda^2
+
+
+
+## Part 2 - Toothgrowth Dataset
+
+You can also embed plots, for example:
+
+```{r toothgrowth}
+summary(ToothGrowth)
+str(ToothGrowth)
+```
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
