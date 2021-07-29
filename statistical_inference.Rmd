@@ -4,12 +4,13 @@ author: "Ben Kooi"
 date: "28-7-2021"
 output: html_document
 ---
+## Synopsis
 
 ## Setting the environment
 
 Load the needed packages.
 ```{r}
-packages <- c("data.table","dplyr", "ggplot2", "knitr")
+packages <- c("data.table","dplyr", "ggplot2")
 sapply(packages, require, character.only=TRUE, quietly=TRUE)
 ```
 
@@ -59,8 +60,23 @@ X = 1 / lambda^2
 You can also embed plots, for example:
 
 ```{r toothgrowth}
+ToothGrowth$dose <- as.factor(ToothGrowth$dose)
 summary(ToothGrowth)
 str(ToothGrowth)
+# Change box plot colors by groups
+p<-ggplot(ToothGrowth, aes(x=dose, y=len, fill=dose)) +
+  geom_boxplot()
+p
+t.test(len ~ dose, paired = FALSE, data = subset(ToothGrowth,(ToothGrowth$dose %in% c(0.5, 1))))
+t.test(len ~ dose, paired = FALSE, data = subset(ToothGrowth,(ToothGrowth$dose %in% c(0.5, 2))))
+t.test(len ~ dose, paired = FALSE, data = subset(ToothGrowth,(ToothGrowth$dose %in% c(1, 2))))
+# Change the position
+t<-ggplot(ToothGrowth, aes(x=supp, y=len, fill=supp)) +
+  geom_boxplot()
+t
+t.test(len ~ supp, paired = FALSE, data = ToothGrowth)
+n<-ggplot(data = ToothGrowth, aes(x = len,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = median(ToothGrowth$len), size = .75, color = "blue")
+n
 ```
 
 
