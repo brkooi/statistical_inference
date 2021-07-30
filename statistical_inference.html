@@ -371,6 +371,23 @@ summary {
 
 <div id="synopsis" class="section level2">
 <h2>Synopsis</h2>
+<p>This report describes a simulation of a exponential distribution and the analysis of the TootGrowth-dataset. The questions that should be answered are:</p>
+<ol style="list-style-type: decimal">
+<li>Exponential Distribution Simulation
+<ul>
+<li>Show the sample mean and compare it to the theoretical mean of the distribution</li>
+<li>Show how variable the sample is (via variance) and compare it to the theoretical variance of the distribution</li>
+<li>Show that the distribution is approximately normal</li>
+</ul></li>
+<li>Analyzing Toothgrowth Dataset
+<ul>
+<li>Provide a basic summary of the data</li>
+<li>Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose</li>
+<li>Conclusions and assumptions</li>
+</ul></li>
+</ol>
+<p>The sample mean, the mean of sampling the exponential distribution a 1000 times with a sample size of 40 is nearly the same as theoretical mean of the exponential distribution. This also proves the Central Limit Theorem. Also the variance of the sample and the theoretical variance are nearly the same.</p>
+<p>The most important conclusion of analyzing the ToothGrowth-dataset is that we can reject the null-hypothesis for len ~ dose, but for len ~ supp we can accept the null-hypothesis. In other words, dose matters by tootgrowth and supp not.</p>
 </div>
 <div id="setting-the-environment" class="section level2">
 <h2>Setting the environment</h2>
@@ -411,6 +428,8 @@ hist(exponentialdistribution)</code></pre>
 ##  0.00678  1.45180  3.43346  5.01341  7.01110 41.83332</code></pre>
 <pre class="r"><code>str(exponentialdistribution)</code></pre>
 <pre><code>##  num [1:1000] 9.94 1.852 0.363 2.011 0.28 ...</code></pre>
+<pre class="r"><code>mean(exponentialdistribution)</code></pre>
+<pre><code>## [1] 5.013411</code></pre>
 <pre class="r"><code>var(exponentialdistribution)</code></pre>
 <pre><code>## [1] 26.09434</code></pre>
 <pre class="r"><code>sd(exponentialdistribution)</code></pre>
@@ -437,8 +456,8 @@ summary(samplemeans)</code></pre>
 <pre><code>## [1] 25</code></pre>
 <p>The variance of X is given by X = 1 / lambda^2</p>
 </div>
-<div id="part-2---toothgrowth-dataset" class="section level2">
-<h2>Part 2 - Toothgrowth Dataset</h2>
+<div id="part-2---analyzing-toothgrowth-dataset" class="section level2">
+<h2>Part 2 - Analyzing Toothgrowth Dataset</h2>
 <p>You can also embed plots, for example:</p>
 <pre class="r"><code>ToothGrowth$dose &lt;- as.factor(ToothGrowth$dose)
 summary(ToothGrowth)</code></pre>

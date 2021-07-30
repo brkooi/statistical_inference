@@ -5,7 +5,22 @@ date: "28-7-2021"
 output: html_document
 ---
 ## Synopsis
+This report describes a simulation of a exponential distribution and the analysis of the TootGrowth-dataset.
+The questions that should be answered are:
 
+1. Exponential Distribution Simulation
+    * Show the sample mean and compare it to the theoretical mean of the distribution
+    * Show how variable the sample is (via variance) and compare it to the theoretical variance of the distribution
+    * Show that the distribution is approximately normal
+2. Analyzing Toothgrowth Dataset
+    * Provide a basic summary of the data
+    * Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose
+    * Conclusions and assumptions
+    
+The sample mean, the mean of sampling the exponential distribution a 1000 times with a sample size of 40 is nearly the same as theoretical mean of the exponential distribution. This also proves the Central Limit Theorem. Also the variance of the sample and the theoretical variance are nearly the same.
+
+The most important conclusion of analyzing the ToothGrowth-dataset is that we can reject the null-hypothesis for len ~ dose, but for len ~ supp we can accept the null-hypothesis. In other words, dose matters by tootgrowth and supp not.
+ 
 ## Setting the environment
 
 Load the needed packages.
@@ -36,6 +51,7 @@ exponentialdistribution<-rexp(observations,rate)
 hist(exponentialdistribution)
 summary(exponentialdistribution)
 str(exponentialdistribution)
+mean(exponentialdistribution)
 var(exponentialdistribution)
 sd(exponentialdistribution)
 samplemeans = NULL
@@ -55,7 +71,7 @@ X = 1 / lambda^2
 
 
 
-## Part 2 - Toothgrowth Dataset
+## Part 2 - Analyzing Toothgrowth Dataset
 
 You can also embed plots, for example:
 
