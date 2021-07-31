@@ -17,14 +17,14 @@ The questions that should be answered are:
     * Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose
     * Conclusions and assumptions
     
-The sample mean, the mean of sampling the exponential distribution a 1000 times with a sample size of 40 is nearly the same as theoretical mean of the exponential distribution. This also proves the Central Limit Theorem. Also the variance of the sample and the theoretical variance are nearly the same.
+The sample mean, the mean of sampling the exponential distribution a 1000 times with a sampling size of 40 draws is nearly the same as theoretical mean of the exponential distribution. This also proves the Central Limit Theorem. Also the variance of the sample and the theoretical variance are nearly the same.
 
 The most important conclusion of analyzing the ToothGrowth-dataset is that we can reject the null-hypothesis for len ~ dose, but for len ~ supp we can accept the null-hypothesis. In other words, dose matters by tootgrowth and supp not.
  
 ## Setting the environment
 
 Load the needed packages.
-```{r}
+```{r message=FALSE}
 packages <- c("data.table","dplyr", "ggplot2")
 sapply(packages, require, character.only=TRUE, quietly=TRUE)
 ```
@@ -34,40 +34,60 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Part 1 - Exponential Distribution Simulation
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r }
-set.seed(5)
-observations<-1000
-samplesize<-40
+```{r include=FALSE}
 rate<-0.2
 theoretical_mean<-1/rate
 theoretical_sd<-1/rate
 theoretical_var<- 1 / (rate^2)
-exponentialdistribution<-rexp(observations,rate)
-hist(exponentialdistribution)
-summary(exponentialdistribution)
-str(exponentialdistribution)
-mean(exponentialdistribution)
-var(exponentialdistribution)
-sd(exponentialdistribution)
-samplemeans = NULL
-for (i in 1 : 1000) samplemeans = c(samplemeans, mean(sample(exponentialdistribution, samplesize, replace=TRUE)))
-
-summary(samplemeans)
-str(samplemeans)
-hist(samplemeans)
-var(samplemeans)
-sd(samplemeans)
 theoretical_mean
 theoretical_sd
 theoretical_var
 ```
-The variance of X is given by
-X = 1 / lambda^2
+
+The expected value or mean of a exponential distribution is calculated by E[X]=1/λ. The standard deviation is equal to the mean and the variance is calculated by Var[X]=1/λ^2. In this case we assume that λ (=rate) is 0.2.
+With this knowlegde we can calculate the theoretical mean, standard deviation and variance. These are **`r theoretical_mean`**, **`r theoretical_sd`** and **`r theoretical_var`**.
+
+```{r message=FALSE}
+set.seed(5)
+n<-1000
+samplingsize<-40
+rate<-0.2
+exponentialdistribution<-rexp(n,rate)
+med<-mean(exponentialdistribution)
+ved<-var(exponentialdistribution)
+```
+
+If we simulate a exponential distribution with a samplesize n=1000 and a rate λ=0.2, the histogram is looks as follows:
+```{r }
+hist(exponentialdistribution)
+ed<-data_frame(val = exponentialdistribution)
+str(ed)
+n<-ggplot(data = ed, aes(x = val,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = mean(ed$val), size = .75, color = "blue")
+n
+```
+
+The summary gives the next statistics:
+```{r }
+summary(exponentialdistribution)
+
+```
+
+The summary shows mean = **`r med`** and is almost equal to the theoretical mean = **`r theoretical_mean`**.
+Also the variance = **`r ved`** is almost equal to the theoretical variance = **`r theoretical_var`**.
+
+```{r message=FALSE}
+samplemeans = NULL
+for (i in 1 : 1000) samplemeans = c(samplemeans, mean(sample(exponentialdistribution, samplingsize, replace=TRUE)))
+summary(samplemeans)
+str(samplemeans)
+var(samplemeans)
+sd(samplemeans)
+#hist(samplemeans)
+sam<-data_frame(val = samplemeans)
+n<-ggplot(data = sam, aes(x = val,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = mean(sam$val), size = .75, color = "blue")
+n
+```
+
 
 
 
