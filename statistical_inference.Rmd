@@ -44,7 +44,7 @@ theoretical_sd
 theoretical_var
 ```
 
-The expected value or mean of a exponential distribution is calculated by E[X]=1/λ. The standard deviation is equal to the mean and the variance is calculated by Var[X]=1/λ^2. In this case we assume that λ (=rate) is 0.2.
+The expected value or mean of a exponential distribution is calculated by E[X]=1/λ. The standard deviation is equal to the mean and the variance is calculated by Var[X]=1/λ^2. In this case we assume that λ (=rate) is **`r rate`**.
 With this knowlegde we can calculate the theoretical mean, standard deviation and variance. These are **`r theoretical_mean`**, **`r theoretical_sd`** and **`r theoretical_var`**.
 
 ```{r message=FALSE}
@@ -57,12 +57,12 @@ med<-mean(exponentialdistribution)
 ved<-var(exponentialdistribution)
 ```
 
-If we simulate a exponential distribution with a samplesize n=1000 and a rate λ=0.2, the histogram is looks as follows:
+If we simulate a exponential distribution with a samplesize n=**`r n`** and a rate λ=**`r rate`**, the histogram is looks as follows:
 ```{r }
-hist(exponentialdistribution)
+#hist(exponentialdistribution)
 ed<-data_frame(val = exponentialdistribution)
 str(ed)
-n<-ggplot(data = ed, aes(x = val,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = mean(ed$val), size = .75, color = "blue")
+n<-ggplot(data = ed, aes(x = val)) + geom_histogram(aes(y=..density..), colour="black", fill = "white") + geom_density(alpha=0.2, fill="#FF6666") + theme(legend.position="none") +  geom_density() +  geom_vline(xintercept = mean(ed$val), linetype="dashed", size = .75, color = "blue") 
 n
 ```
 
@@ -84,7 +84,13 @@ var(samplemeans)
 sd(samplemeans)
 #hist(samplemeans)
 sam<-data_frame(val = samplemeans)
-n<-ggplot(data = sam, aes(x = val,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = mean(sam$val), size = .75, color = "blue")
+n<-ggplot(data = sam, aes(x = val)) + geom_histogram(aes(y=..density..), colour="black", fill = "white") + geom_density(alpha=0.2, fill="#FF6666") + theme(legend.position="none") +  geom_density() +  geom_vline(xintercept = mean(sam$val), linetype="dashed", size = .75, color = "blue") + 
+geom_vline(xintercept = mean(sam$val)+sd(sam$val), linetype="dashed", size = .75, color = "red") +
+geom_vline(xintercept = mean(sam$val)+2*sd(sam$val), linetype="dashed", size = .75, color = "red") +
+geom_vline(xintercept = mean(sam$val)-sd(sam$val), linetype="dashed", size = .75, color = "red") +
+geom_vline(xintercept = mean(sam$val)-2*sd(sam$val), linetype="dashed", size = .75, color = "red")
+
+  
 n
 ```
 
@@ -110,9 +116,12 @@ t.test(len ~ dose, paired = FALSE, data = subset(ToothGrowth,(ToothGrowth$dose %
 t<-ggplot(ToothGrowth, aes(x=supp, y=len, fill=supp)) +
   geom_boxplot()
 t
-t.test(len ~ supp, paired = FALSE, data = ToothGrowth)
+with(ToothGrowth, shapiro.test(len))
+with(ToothGrowth, shapiro.test(len[supp == "OJ"]))
+t.test(len ~ supp, paired = FALSE, data = ToothGrowth, var.equal = FALSE)
 n<-ggplot(data = ToothGrowth, aes(x = len,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = median(ToothGrowth$len), size = .75, color = "blue")
 n
+
 ```
 
 
