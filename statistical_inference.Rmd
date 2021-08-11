@@ -48,58 +48,67 @@ The expected value or mean of a exponential distribution is calculated by E[X]=1
 With this knowlegde we can calculate the theoretical mean, standard deviation and variance. These are **`r theoretical_mean`**, **`r theoretical_sd`** and **`r theoretical_var`**.
 
 ```{r message=FALSE}
+# set the constant variables
 set.seed(5)
 n<-1000
 samplingsize<-40
 rate<-0.2
+
+#simulate random exponential distribution
 exponentialdistribution<-rexp(n,rate)
+
+#calculate mean and variance
 med<-mean(exponentialdistribution)
 ved<-var(exponentialdistribution)
 ```
 
 If we simulate a exponential distribution with a samplesize n=**`r n`** and a rate λ=**`r rate`**, the histogram is looks as follows:
 ```{r }
-#hist(exponentialdistribution)
+#create dataframe
 ed<-data_frame(val = exponentialdistribution)
-str(ed)
-n<-ggplot(data = ed, aes(x = val)) + geom_histogram(aes(y=..density..), colour="black", fill = "white") + geom_density(alpha=0.2, fill="#FF6666") + theme(legend.position="none") +  geom_density() +  geom_vline(xintercept = mean(ed$val), linetype="dashed", size = .75, color = "blue") 
-n
+
+#plot dataframe
+plot<-ggplot(data = ed, aes(x = val)) + geom_histogram(aes(y=..density..), bins=20, colour="black", fill = "white") + geom_density(alpha=0.2, fill="#FF6666") + theme(legend.position="none") +  geom_density() +  geom_vline(xintercept = mean(ed$val), linetype="dashed", size = .75, color = "blue") +
+labs(title="Plot of simulated exponential distribution", x ="Value", y = "Density")
+plot
 ```
 
 The summary gives the next statistics:
 ```{r }
 summary(exponentialdistribution)
-
 ```
 
 The summary shows mean = **`r med`** and is almost equal to the theoretical mean = **`r theoretical_mean`**.
 Also the variance = **`r ved`** is almost equal to the theoretical variance = **`r theoretical_var`**.
 
-```{r message=FALSE}
+In the next part we generate a distribution by calculating the means of samples from the exponential distribution. We take **`r n`** samples of with a size of **`r samplingsize`**. 
+
+```{r }
+#sampling from exponentialdistribution
 samplemeans = NULL
 for (i in 1 : 1000) samplemeans = c(samplemeans, mean(sample(exponentialdistribution, samplingsize, replace=TRUE)))
-summary(samplemeans)
-str(samplemeans)
-var(samplemeans)
-sd(samplemeans)
-#hist(samplemeans)
 sam<-data_frame(val = samplemeans)
-n<-ggplot(data = sam, aes(x = val)) + geom_histogram(aes(y=..density..), colour="black", fill = "white") + geom_density(alpha=0.2, fill="#FF6666") + theme(legend.position="none") +  geom_density() +  geom_vline(xintercept = mean(sam$val), linetype="dashed", size = .75, color = "blue") + 
+
+#calculate mean
+meansam<-mean(sam$val)
+
+#plot of distribution
+plot<-ggplot(data = sam, aes(x = val)) + geom_histogram(aes(y=..density..), bins=20,colour="black", fill = "white") + geom_density(alpha=0.2, fill="#FF6666") + theme(legend.position="none") +  geom_density() +          geom_vline(xintercept = mean(sam$val), linetype="dashed", size = .75, color = "blue") + 
 geom_vline(xintercept = mean(sam$val)+sd(sam$val), linetype="dashed", size = .75, color = "red") +
 geom_vline(xintercept = mean(sam$val)+2*sd(sam$val), linetype="dashed", size = .75, color = "red") +
 geom_vline(xintercept = mean(sam$val)-sd(sam$val), linetype="dashed", size = .75, color = "red") +
-geom_vline(xintercept = mean(sam$val)-2*sd(sam$val), linetype="dashed", size = .75, color = "red")
-
-  
-n
+geom_vline(xintercept = mean(sam$val)-2*sd(sam$val), linetype="dashed", size = .75, color = "red") +
+ggtitle("Plot of sampling the exponential distribution") +
+labs(title="Plot of sampled distribution", x ="Value", y = "Density")
+plot
 ```
 
-
+By plotting the distribution of the sample means, you can see that this ditribution seems to be normal. The mean of this distribution is **`r meansam`**, almost the same as the mean of the exponential distribution **`r med`**. So the Central Limit Theorem proves to be true.
 
 
 ## Part 2 - Analyzing Toothgrowth Dataset
 
-You can also embed plots, for example:
+The Toothgrowth Dataset contains the length of odontoblasts (cells responsible for tooth growth) in 60 guinea pigs. Each animal received one of three dose levels of vitamin C (0.5, 1, and 2 mg/day) by one of two delivery methods, OJ=orange juice or VC=ascorbic acid.
 
 ```{r toothgrowth}
 ToothGrowth$dose <- as.factor(ToothGrowth$dose)
@@ -113,14 +122,32 @@ t.test(len ~ dose, paired = FALSE, data = subset(ToothGrowth,(ToothGrowth$dose %
 t.test(len ~ dose, paired = FALSE, data = subset(ToothGrowth,(ToothGrowth$dose %in% c(0.5, 2))))
 t.test(len ~ dose, paired = FALSE, data = subset(ToothGrowth,(ToothGrowth$dose %in% c(1, 2))))
 # Change the position
-t<-ggplot(ToothGrowth, aes(x=supp, y=len, fill=supp)) +
+plot<-ggplot(ToothGrowth, aes(x=supp, y=len, fill=supp)) +
   geom_boxplot()
-t
+plot
 with(ToothGrowth, shapiro.test(len))
 with(ToothGrowth, shapiro.test(len[supp == "OJ"]))
 t.test(len ~ supp, paired = FALSE, data = ToothGrowth, var.equal = FALSE)
-n<-ggplot(data = ToothGrowth, aes(x = len,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = median(ToothGrowth$len), size = .75, color = "blue")
-n
+
+#plot the OJ distribution
+plot<-ggplot(data = subset(ToothGrowth,supp=="OJ"), aes(x = len,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = median(ToothGrowth$len), size = .75, color = "blue")
+plot
+
+#plot the VC distribution
+plot<-ggplot(data = subset(ToothGrowth,supp=="VC"), aes(x = len,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = median(ToothGrowth$len), size = .75, color = "blue")
+plot
+
+#plot the dose=0.5 distribution
+plot<-ggplot(data = subset(ToothGrowth,dose==0.5), aes(x = len,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = median(ToothGrowth$len), size = .75, color = "blue")
+plot
+
+#plot the dose=1.0 distribution
+plot<-ggplot(data = subset(ToothGrowth,dose==1.0), aes(x = len,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = median(ToothGrowth$len), size = .75, color = "blue")
+plot
+
+#plot the dose=2.0 distribution
+plot<-ggplot(data = subset(ToothGrowth,dose==2.0), aes(x = len,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = median(ToothGrowth$len), size = .75, color = "blue")
+plot
 
 ```
 
