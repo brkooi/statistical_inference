@@ -130,7 +130,7 @@ with(ToothGrowth, shapiro.test(len[supp == "OJ"]))
 t.test(len ~ supp, paired = FALSE, data = ToothGrowth, var.equal = FALSE)
 
 #plot the OJ distribution
-plot<-ggplot(data = subset(ToothGrowth,supp=="OJ"), aes(x = len,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = median(ToothGrowth$len), size = .75, color = "blue")
+plot<-ggplot(data = ToothGrowth, aes(x = len,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = mean(ToothGrowth$len), size = .75, color = "blue") + facet_wrap(~supp)
 plot
 
 #plot the VC distribution
@@ -138,18 +138,17 @@ plot<-ggplot(data = subset(ToothGrowth,supp=="VC"), aes(x = len,  colour="red", 
 plot
 
 #plot the dose=0.5 distribution
-plot<-ggplot(data = subset(ToothGrowth,dose==0.5), aes(x = len,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = median(ToothGrowth$len), size = .75, color = "blue")
+plot<-ggplot(data = subset(ToothGrowth,dose==0.5), aes(x = len,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = median(subset(ToothGrowth,dose==0.5)$len), size = .75, color = "blue")
 plot
 
 #plot the dose=1.0 distribution
-plot<-ggplot(data = subset(ToothGrowth,dose==1.0), aes(x = len,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = median(ToothGrowth$len), size = .75, color = "blue")
+plot<-ggplot(data = subset(ToothGrowth,dose==1.0), aes(x = len,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = median(subset(ToothGrowth,dose==1.0)$len), size = .75, color = "blue")
 plot
 
 #plot the dose=2.0 distribution
-plot<-ggplot(data = subset(ToothGrowth,dose==2.0), aes(x = len,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = median(ToothGrowth$len), size = .75, color = "blue")
+plot<-ggplot(data = subset(ToothGrowth,dose==2.0), aes(x = len,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = median(subset(ToothGrowth,dose==2.0)$len), size = .75, color = "blue")
 plot
 
 ```
 
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
