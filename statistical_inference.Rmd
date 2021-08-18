@@ -2,7 +2,7 @@
 title: "Data Science Statistical Inference"
 author: "Ben Kooi"
 date: "28-7-2021"
-output: html_document
+output: html_document_test
 ---
 ## Synopsis
 This report describes a simulation of a exponential distribution and the analysis of the TootGrowth-dataset.
