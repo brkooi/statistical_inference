@@ -150,5 +150,6 @@ plot<-ggplot(data = subset(ToothGrowth,dose==2.0), aes(x = len,  colour="red", f
 plot
 
 ```
+Werkt PAT nu?
 
 
