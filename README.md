@@ -1,2 +1,2 @@
 # statistical_inference
-Coursera - Data Science Specialization - Statistical Inference test
+Coursera - Data Science Specialization - Statistical Inference test test
