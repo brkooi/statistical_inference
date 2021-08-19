@@ -2,7 +2,7 @@
 title: "Data Science Statistical Inference"
 author: "Ben Kooi"
 date: "28-7-2021"
-output: html_document_test
+output: html_document
 ---
 ## Synopsis
 This report describes a simulation of a exponential distribution and the analysis of the TootGrowth-dataset.
@@ -110,46 +110,57 @@ By plotting the distribution of the sample means, you can see that this ditribut
 
 The Toothgrowth Dataset contains the length of odontoblasts (cells responsible for tooth growth) in 60 guinea pigs. Each animal received one of three dose levels of vitamin C (0.5, 1, and 2 mg/day) by one of two delivery methods, OJ=orange juice or VC=ascorbic acid.
 
-```{r toothgrowth}
+First we do a few basic analysis of the data.
+```{r }
+#change type of variable dose
 ToothGrowth$dose <- as.factor(ToothGrowth$dose)
+
+#inspect the summary and the structure of the dataset
 summary(ToothGrowth)
 str(ToothGrowth)
-# Change box plot colors by groups
+
+# make boxplot to analyze the len ~ dose
 p<-ggplot(ToothGrowth, aes(x=dose, y=len, fill=dose)) +
-  geom_boxplot()
+  geom_boxplot() +
+  ggtitle("Toothgrowth per dose") +
+  labs(title="Plot of sampled distribution", x ="Dose", y = "Lenght")
 p
+```
+
+If we analyze the plot, it seems that len is strong dependant of dose. For proving this we perform a nopaired t.test of every combination of doses.
+
+```{r }
+# testing for signficance
 t.test(len ~ dose, paired = FALSE, data = subset(ToothGrowth,(ToothGrowth$dose %in% c(0.5, 1))))
 t.test(len ~ dose, paired = FALSE, data = subset(ToothGrowth,(ToothGrowth$dose %in% c(0.5, 2))))
 t.test(len ~ dose, paired = FALSE, data = subset(ToothGrowth,(ToothGrowth$dose %in% c(1, 2))))
-# Change the position
-plot<-ggplot(ToothGrowth, aes(x=supp, y=len, fill=supp)) +
-  geom_boxplot()
-plot
-with(ToothGrowth, shapiro.test(len))
-with(ToothGrowth, shapiro.test(len[supp == "OJ"]))
-t.test(len ~ supp, paired = FALSE, data = ToothGrowth, var.equal = FALSE)
-
-#plot the OJ distribution
-plot<-ggplot(data = ToothGrowth, aes(x = len,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = mean(ToothGrowth$len), size = .75, color = "blue") + facet_wrap(~supp)
-plot
-
-#plot the VC distribution
-plot<-ggplot(data = subset(ToothGrowth,supp=="VC"), aes(x = len,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = median(ToothGrowth$len), size = .75, color = "blue")
-plot
-
-#plot the dose=0.5 distribution
-plot<-ggplot(data = subset(ToothGrowth,dose==0.5), aes(x = len,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = median(subset(ToothGrowth,dose==0.5)$len), size = .75, color = "blue")
-plot
-
-#plot the dose=1.0 distribution
-plot<-ggplot(data = subset(ToothGrowth,dose==1.0), aes(x = len,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = median(subset(ToothGrowth,dose==1.0)$len), size = .75, color = "blue")
-plot
-
-#plot the dose=2.0 distribution
-plot<-ggplot(data = subset(ToothGrowth,dose==2.0), aes(x = len,  colour="red", fill = "red", alpha=0.1)) + theme(legend.position="none") + geom_density() +  geom_vline(xintercept = median(subset(ToothGrowth,dose==2.0)$len), size = .75, color = "blue")
-plot
-
 ```
-Werkt PAT nu?
+Every t.test has a outcome of a p-value<0.05. So we can reject the null-hypothesis. There is a significant difference in toothgrowth if we change the dose of vitamin C.
+
+The next analysis is to determine if the type of supplement (supp) has a significant difference in toothgrowth. First we make a boxplot.
+
+```{r}
+#calculate mean and variance of both supplements
+mvc<-mean(subset(ToothGrowth,ToothGrowth$supp=="VC")$len)
+vvc<-var(subset(ToothGrowth,ToothGrowth$supp=="VC")$len)
+moj<-mean(subset(ToothGrowth,ToothGrowth$supp=="OJ")$len)
+voj<-var(subset(ToothGrowth,ToothGrowth$supp=="OJ")$len)
+
+# make a boxplot len~supp
+plot<-ggplot(ToothGrowth, aes(x=supp, y=len, fill=supp)) +
+  geom_boxplot() +
+  ggtitle("Toothgrowth per supplement") +
+  labs(title="Plot of sampled distribution", x ="Supplement", y = "Lenght")
+plot
+```
+
+The mean of the groups are different, so are the variance. The means are **`r mvc`** vs **`r moj`** and the variances are **`r vvc`** vs **`r voj`**
+
+```{r}
+# testing for signficance
+t.test(len ~ supp, paired = FALSE, data = ToothGrowth, var.equal = FALSE)
+```
+
+If we perform a nopaired t.test of len ~ supp the p-value is close to 0.5, but greater. So we have to reject the null-hypothesis. So it seems to be that the type of supplement doesn't matter for toothgrowth.
 
 
