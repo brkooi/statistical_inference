@@ -1,26 +1,21 @@
 ---
 title: "Data Science Statistical Inference"
 author: "Ben Kooi"
-date: "28-7-2021"
-output: html_document
+date: "20-8-2021"
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
 ---
 ## Synopsis
-This report describes a simulation of a exponential distribution and the analysis of the TootGrowth-dataset.
-The questions that should be answered are:
+This report describes a simulation of a exponential distribution.
+The questions that should be answered are:  
+* Show the sample mean and compare it to the theoretical mean of the distribution  
+* Show how variable the sample is (via variance) and compare it to the theoretical variance of the distribution  
+* Show that the distribution is approximately normal
 
-1. Exponential Distribution Simulation
-    * Show the sample mean and compare it to the theoretical mean of the distribution
-    * Show how variable the sample is (via variance) and compare it to the theoretical variance of the distribution
-    * Show that the distribution is approximately normal
-2. Analyzing Toothgrowth Dataset
-    * Provide a basic summary of the data
-    * Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose
-    * Conclusions and assumptions
-    
 The sample mean, the mean of sampling the exponential distribution a 1000 times with a sampling size of 40 draws is nearly the same as theoretical mean of the exponential distribution. This also proves the Central Limit Theorem. Also the variance of the sample and the theoretical variance are nearly the same.
 
-The most important conclusion of analyzing the ToothGrowth-dataset is that we can reject the null-hypothesis for len ~ dose, but for len ~ supp we can accept the null-hypothesis. In other words, dose matters by tootgrowth and supp not.
- 
 ## Setting the environment
 
 Load the needed packages.
@@ -44,7 +39,7 @@ theoretical_sd
 theoretical_var
 ```
 
-The expected value or mean of a exponential distribution is calculated by E[X]=1/λ. The standard deviation is equal to the mean and the variance is calculated by Var[X]=1/λ^2. In this case we assume that λ (=rate) is **`r rate`**.
+The expected value or mean of a exponential distribution is calculated by E[X]=1/lambda. The standard deviation is equal to the mean and the variance is calculated by Var[X]=1/lambda^2. In this case we assume that lambda (=rate) is **`r rate`**.
 With this knowlegde we can calculate the theoretical mean, standard deviation and variance. These are **`r theoretical_mean`**, **`r theoretical_sd`** and **`r theoretical_var`**.
 
 ```{r message=FALSE}
@@ -104,63 +99,5 @@ plot
 ```
 
 By plotting the distribution of the sample means, you can see that this ditribution seems to be normal. The mean of this distribution is **`r meansam`**, almost the same as the mean of the exponential distribution **`r med`**. So the Central Limit Theorem proves to be true.
-
-
-## Part 2 - Analyzing Toothgrowth Dataset
-
-The Toothgrowth Dataset contains the length of odontoblasts (cells responsible for tooth growth) in 60 guinea pigs. Each animal received one of three dose levels of vitamin C (0.5, 1, and 2 mg/day) by one of two delivery methods, OJ=orange juice or VC=ascorbic acid.
-
-First we do a few basic analysis of the data.
-```{r }
-#change type of variable dose
-ToothGrowth$dose <- as.factor(ToothGrowth$dose)
-
-#inspect the summary and the structure of the dataset
-summary(ToothGrowth)
-str(ToothGrowth)
-
-# make boxplot to analyze the len ~ dose
-p<-ggplot(ToothGrowth, aes(x=dose, y=len, fill=dose)) +
-  geom_boxplot() +
-  ggtitle("Toothgrowth per dose") +
-  labs(title="Plot of sampled distribution", x ="Dose", y = "Lenght")
-p
-```
-
-If we analyze the plot, it seems that len is strong dependant of dose. For proving this we perform a nopaired t.test of every combination of doses.
-
-```{r }
-# testing for signficance
-t.test(len ~ dose, paired = FALSE, data = subset(ToothGrowth,(ToothGrowth$dose %in% c(0.5, 1))))
-t.test(len ~ dose, paired = FALSE, data = subset(ToothGrowth,(ToothGrowth$dose %in% c(0.5, 2))))
-t.test(len ~ dose, paired = FALSE, data = subset(ToothGrowth,(ToothGrowth$dose %in% c(1, 2))))
-```
-Every t.test has a outcome of a p-value<0.05. So we can reject the null-hypothesis. There is a significant difference in toothgrowth if we change the dose of vitamin C.
-
-The next analysis is to determine if the type of supplement (supp) has a significant difference in toothgrowth. First we make a boxplot.
-
-```{r}
-#calculate mean and variance of both supplements
-mvc<-mean(subset(ToothGrowth,ToothGrowth$supp=="VC")$len)
-vvc<-var(subset(ToothGrowth,ToothGrowth$supp=="VC")$len)
-moj<-mean(subset(ToothGrowth,ToothGrowth$supp=="OJ")$len)
-voj<-var(subset(ToothGrowth,ToothGrowth$supp=="OJ")$len)
-
-# make a boxplot len~supp
-plot<-ggplot(ToothGrowth, aes(x=supp, y=len, fill=supp)) +
-  geom_boxplot() +
-  ggtitle("Toothgrowth per supplement") +
-  labs(title="Plot of sampled distribution", x ="Supplement", y = "Lenght")
-plot
-```
-
-The mean of the groups are different, so are the variance. The means are **`r mvc`** vs **`r moj`** and the variances are **`r vvc`** vs **`r voj`**
-
-```{r}
-# testing for signficance
-t.test(len ~ supp, paired = FALSE, data = ToothGrowth, var.equal = FALSE)
-```
-
-If we perform a nopaired t.test of len ~ supp the p-value is close to 0.5, but greater. So we have to reject the null-hypothesis. So it seems to be that the type of supplement doesn't matter for toothgrowth.
 
 
